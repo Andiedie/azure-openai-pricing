@@ -16,12 +16,12 @@ for task in conf.tasks:
         last_records = table.list(limit=1, sort=['时间 DESC'],
                                   filter=f"CurrentValue.[资源名]=\"{resource['azure_resource_name']}\"")
         if len(last_records) > 0:
-            start_time = datetime.fromtimestamp(last_records[0].fields['时间'] / 1000).astimezone(tz8)
+            start_time = datetime.fromtimestamp(last_records[0].fields['时间'] / 1000).astimezone(tz8) + timedelta(hours=1)
             print(f"got start time {start_time} from records")
         else:
             start_time = datetime.fromisoformat(resource['start_time']).astimezone(tz8)
             print(f"got start time {start_time} from task")
-        end_time = (datetime.now() - timedelta(hours=1)).astimezone(tz8)
+        end_time = datetime.now().astimezone(tz8)
         if end_time - start_time < timedelta(hours=1):
             print(f"skip {resource['azure_resource_name']} because of too short time range")
             continue
