@@ -3,3 +3,4 @@ azure-identity==1.15.0
 azure-mgmt-monitor==6.0.2
 lark-oapi==1.0.25
 pandas==2.1.2
+pytz==2023.3.post1
