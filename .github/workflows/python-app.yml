@@ -22,5 +22,12 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Run
+      env:
+        AZURE_APP_CLIENT_ID: ${{ secrets.AZURE_APP_CLIENT_ID }}
+        AZURE_APP_CLIENT_SECRET: ${{ secrets.AZURE_APP_CLIENT_SECRET }}
+        AZURE_APP_TENANT_ID: ${{ secrets.AZURE_APP_TENANT_ID }}
+        FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+        FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+        TASKS: ${{ secrets.TASKS }}
       run: |
         python main.py
