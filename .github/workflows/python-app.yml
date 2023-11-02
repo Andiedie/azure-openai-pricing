@@ -28,5 +28,6 @@ jobs:
         AZURE_APP_TENANT_ID: ${{ secrets.AZURE_APP_TENANT_ID }}
         FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
         FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+        TASKS: ${{ env.TASKS }}
       run: |
         python main.py
