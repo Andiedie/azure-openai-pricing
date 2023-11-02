@@ -16,7 +16,8 @@ for task in conf.tasks:
         last_records = table.list(limit=1, sort=['时间 DESC'],
                                   filter=f"CurrentValue.[资源名]=\"{resource['azure_resource_name']}\"")
         if len(last_records) > 0:
-            start_time = datetime.fromtimestamp(last_records[0].fields['时间'] / 1000).astimezone(tz8) + timedelta(hours=1)
+            start_time = datetime.fromtimestamp(last_records[0].fields['时间'] / 1000).astimezone(tz8)
+            start_time -= timedelta(hours=1)
             print(f"got start time {start_time} from records")
         else:
             start_time = datetime.fromisoformat(resource['start_time']).astimezone(tz8)
@@ -53,5 +54,5 @@ for task in conf.tasks:
         df = df[(df['Prompt Tokens'] > 0) | (df['Completion Tokens'] > 0)]
         final_records = df.to_dict('records')
         if len(final_records) > 0:
-            print(f"inserting {len(final_records)} records")
-            table.insert(final_records)
+            print(f"upserting {len(final_records)} records")
+            table.upsert(final_records, ['资源名', '时间', '模型'])
