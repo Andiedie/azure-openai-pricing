@@ -22,7 +22,7 @@ for task in conf.tasks:
             start_time = datetime.fromisoformat(resource['start_time']).astimezone(tz8)
             print(f"got start time {start_time} from task")
         end_time = datetime.now().astimezone(tz8)
-        if end_time - start_time < timedelta(hours=1):
+        if end_time <= start_time:
             print(f"skip {resource['azure_resource_name']} because of too short time range")
             continue
 
@@ -49,7 +49,9 @@ for task in conf.tasks:
                         'Completion Tokens': one_time.total if one_metric.name.value == 'GeneratedTokens' else 0
                     })
 
-        final_records = pd.DataFrame(records).groupby(['资源名', '时间', '模型']).sum().reset_index().to_dict('records')
+        df = pd.DataFrame(records).groupby(['资源名', '时间', '模型']).sum().reset_index()
+        df = df[(df['Prompt Tokens'] > 0) | (df['Completion Tokens'] > 0)]
+        final_records = df.to_dict('records')
         if len(final_records) > 0:
             print(f"inserting {len(final_records)} records")
             table.insert(final_records)
