@@ -37,7 +37,9 @@ for task in conf.tasks:
         )
 
         print(f"getting metrics for {resource.azure_resource_name} from {start_time} to {end_time}")
-        data = m.get(['ProcessedPromptTokens', 'GeneratedTokens'], start_time, end_time)
+        data = m.get(
+            ['ProcessedPromptTokens', 'GeneratedTokens', 'AzureOpenAIRequests'],
+            start_time, end_time)
         records = []
         for one_metric in data.value:
             for one_model in one_metric.timeseries:
@@ -46,6 +48,7 @@ for task in conf.tasks:
                         '资源名': resource.azure_resource_name,
                         '时间': one_time.time_stamp.timestamp() * 1000,
                         '模型': one_model.metadatavalues[0].value,
+                        'Requests': one_time.total if one_metric.name.value == 'AzureOpenAIRequests' else 0,
                         'Prompt Tokens': one_time.total if one_metric.name.value == 'ProcessedPromptTokens' else 0,
                         'Completion Tokens': one_time.total if one_metric.name.value == 'GeneratedTokens' else 0
                     })
