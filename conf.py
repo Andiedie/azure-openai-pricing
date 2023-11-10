@@ -32,6 +32,4 @@ try:
     _raw_task_data = base64.b64decode(os.environ.get('TASKS', ''), validate=True).decode()
 except binascii.Error:
     _raw_task_data = os.environ.get('TASKS', '')
-for one in json.loads(_raw_task_data):
-    print(one)
 tasks: list[Task] = [Task.model_validate(one) for one in json.loads(_raw_task_data)]
