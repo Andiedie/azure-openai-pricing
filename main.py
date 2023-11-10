@@ -17,7 +17,7 @@ for task in conf.tasks:
                                   filter=f"CurrentValue.[资源名]=\"{resource.azure_resource_name}\"")
         if len(last_records) > 0:
             start_time = datetime.fromtimestamp(last_records[0].fields['时间'] / 1000).astimezone(tz8)
-            start_time -= timedelta(hours=1)
+            start_time -= timedelta(hours=5)
             print(f"got start time {start_time} from records")
         else:
             start_time = datetime.fromisoformat(resource.start_time).astimezone(tz8)
