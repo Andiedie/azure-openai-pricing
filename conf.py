@@ -6,12 +6,18 @@ import dotenv
 from pydantic import BaseModel, Field
 
 
+class Scale(BaseModel):
+    start_time: str
+    end_time: str = Field(default='9999-12-31T23:59:59.999+08:00')
+    scale: float
+
+
 class Resource(BaseModel):
     azure_subscription_id: str
     azure_resource_group: str
     azure_resource_name: str
     start_time: str
-    scale: float = Field(default=1)
+    scale: list[Scale] = Field(default=[Scale(start_time='1970-01-01T00:00:00.000+00:00', scale=1)])
 
 
 class Task(BaseModel):

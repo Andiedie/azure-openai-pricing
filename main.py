@@ -55,8 +55,15 @@ for task in conf.tasks:
 
         df = pd.DataFrame(records).groupby(['资源名', '时间', '模型']).sum().reset_index()
         df = df[(df['Prompt Tokens'] > 0) | (df['Completion Tokens'] > 0)]
-        df['Prompt Tokens'] = (df['Prompt Tokens'] * resource.scale)
-        df['Completion Tokens'] = (df['Completion Tokens'] * resource.scale)
+        for scale in resource.scale:
+            start_time = datetime.fromisoformat(scale.start_time).astimezone(tz8).timestamp() * 1000
+            end_time = datetime.fromisoformat(scale.end_time).astimezone(tz8).timestamp() * 1000
+            mask = (df['时间'] >= start_time) & (df['时间'] < end_time)
+            df.loc[mask, 'Prompt Tokens'] *= scale.scale
+            df.loc[mask, 'Completion Tokens'] *= scale.scale
+
+        df['Prompt Tokens'] = df['Prompt Tokens'].astype(int)
+        df['Completion Tokens'] = df['Completion Tokens'].astype(int)
         final_records = df.to_dict('records')
         if len(final_records) > 0:
             print(f"upserting {len(final_records)} records")
