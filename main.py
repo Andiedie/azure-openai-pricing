@@ -53,6 +53,10 @@ for task in conf.tasks:
                         'Completion Tokens': one_time.total if one_metric.name.value == 'GeneratedTokens' else 0
                     })
 
+        if len(records) == 0:
+            print(f"skip {resource.azure_resource_name} because of no data")
+            continue
+
         df = pd.DataFrame(records).groupby(['资源名', '时间', '模型']).sum().reset_index()
         df = df[(df['Prompt Tokens'] > 0) | (df['Completion Tokens'] > 0)]
         for scale in resource.scale:
